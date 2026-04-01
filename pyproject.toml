@@ -1,0 +1,21 @@
+[project]
+name = "job-scraper"
+version = "0.1.0"
+description = "AI-powered job search pipeline using Apify scrapers + Gemini API for scoring and resume tailoring"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "apify-client>=2.5.0",
+    "google-genai>=1.35.0",
+    "pypdf>=6.0.0",
+    "python-dotenv>=1.2.2",
+    "sqlalchemy>=2.0.48",
+]
+
+[project.scripts]
+job-scraper = "job_scraper.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
