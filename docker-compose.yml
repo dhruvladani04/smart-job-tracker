@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  # Main job scraper service
+  job-scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Persist database between runs
+      - job_data:/app/data
+      # Persist metrics
+      - job_metrics:/app/metrics
+      # Mount resume files (update path to your resumes)
+      - ./Dhruv_Ladani_Resume_PM.pdf:/app/Dhruv_Ladani_Resume_PM.pdf:ro
+      - ./Dhruv_Ladani_Resume_Tech.pdf:/app/Dhruv_Ladani_Resume_Tech.pdf:ro
+    environment:
+      - APIFY_API_KEY=${APIFY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - JOB_SCRAPER_DB=sqlite:///app/data/job_tracker.db
+      - METRICS_DIR=/app/metrics
+    command: ["run"]
+    restart: "no"
+
+  # Scheduled runner (runs pipeline daily at 9 AM)
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - job_data:/app/data
+      - job_metrics:/app/metrics
+      - ./Dhruv_Ladani_Resume_PM.pdf:/app/Dhruv_Ladani_Resume_PM.pdf:ro
+      - ./Dhruv_Ladani_Resume_Tech.pdf:/app/Dhruv_Ladani_Resume_Tech.pdf:ro
+    environment:
+      - APIFY_API_KEY=${APIFY_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - JOB_SCRAPER_DB=sqlite:///app/data/job_tracker.db
+    command: ["run"]
+    profiles:
+      - scheduled
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+volumes:
+  job_data:
+    driver: local
+  job_metrics:
+    driver: local

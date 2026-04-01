@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Search Tracker</title>
+  <style>
+    :root {
+      --primary: #1f7a5c;
+      --primary-dark: #15523d;
+      --secondary: #3b82f6;
+      --accent: #8b5cf6;
+      --success: #16a34a;
+      --warning: #ca8a04;
+      --danger: #dc2626;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: white;
+      color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Main content */
+    .main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 0.25rem;
+    }
+
+    .stat-card.highlight {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    .stat-card.highlight .stat-label {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .stat-card.highlight .stat-value {
+      color: white;
+    }
+
+    /* Filters */
+    .filters {
+      background: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-group label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .filter-select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .filter-select:hover {
+      border-color: var(--primary);
+    }
+
+    .search-input {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      min-width: 200px;
+    }
+
+    /* Jobs table */
+    .jobs-container {
+      background: var(--card-bg);
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .jobs-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .jobs-header h2 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .bulk-actions {
+      display: none;
+      gap: 0.5rem;
+    }
+
+    .bulk-actions.active {
+      display: flex;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: var(--bg);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+
+    tr:hover {
+      background: var(--bg);
+    }
+
+    tr.selected {
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    /* Job title cell */
+    .job-title {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .job-company {
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      margin-top: 0.25rem;
+    }
+
+    .job-link {
+      color: var(--secondary);
+      text-decoration: none;
+    }
+
+    .job-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-p1 { background: #fef3c7; color: #92400e; }
+    .badge-p2 { background: #fef9c3; color: #854d0e; }
+    .badge-p3 { background: #f0fdf4; color: #166534; }
+
+    .badge-new { background: #dbeafe; color: #1e40af; }
+    .badge-reviewed { background: #fef3c7; color: #92400e; }
+    .badge-applied { background: #d1fae5; color: #065f46; }
+    .badge-interview { background: #e9d5ff; color: #6b21a8; }
+    .badge-offer { background: #16a34a; color: white; }
+    .badge-rejected { background: #fee2e2; color: #991b1b; }
+    .badge-skipped { background: #e5e7eb; color: #374151; }
+    .badge-archived { background: #f3f4f6; color: #6b7280; }
+
+    .badge-apply { background: #d1fae5; color: #065f46; }
+    .badge-skip { background: #fee2e2; color: #991b1b; }
+    .badge-save { background: #dbeafe; color: #1e40af; }
+    .badge-unsure { background: #f3f4f6; color: #6b7280; }
+
+    /* Score display */
+    .score-display {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .score-bar {
+      width: 60px;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    .score-fill.high { background: var(--success); }
+    .score-fill.medium { background: var(--warning); }
+    .score-fill.low { background: var(--danger); }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 0.75rem;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .detail-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-section h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-label {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .detail-value {
+      font-size: 0.875rem;
+    }
+
+    .jd-text {
+      background: var(--bg);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .modal-actions {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+
+    .form-stack {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .form-textarea,
+    .form-input {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font: inherit;
+      background: white;
+      color: var(--text);
+    }
+
+    .form-textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    /* Checkbox */
+    .checkbox {
+      width: 1rem;
+      height: 1rem;
+      cursor: pointer;
+    }
+
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: var(--text);
+      color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      z-index: 2000;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-group {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .search-input {
+        width: 100%;
+      }
+
+      .detail-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <h1>Job Search Tracker</h1>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="refreshData()">Refresh</button>
+        <a href="/docs" class="btn btn-primary">API Docs</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading stats...
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <label for="statusFilter">Status:</label>
+        <select id="statusFilter" class="filter-select" onchange="loadJobs()">
+          <option value="">All</option>
+          <option value="new">New</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+          <option value="skipped">Skipped</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="priorityFilter">Priority:</label>
+        <select id="priorityFilter" class="filter-select" onchange="loadJobs()">
+          <option value="">All</option>
+          <option value="P1">P1 - Apply Immediately</option>
+          <option value="P2">P2 - Strong Apply</option>
+          <option value="P3">P3 - Stretch</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="verdictFilter">Verdict:</label>
+        <select id="verdictFilter" class="filter-select" onchange="loadJobs()">
+          <option value="">All</option>
+          <option value="apply">Apply</option>
+          <option value="skip">Skip</option>
+          <option value="save">Save</option>
+          <option value="unsure">Unsure</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="minScore">Min Score:</label>
+        <select id="minScore" class="filter-select" onchange="loadJobs()">
+          <option value="">Any</option>
+          <option value="85">85+ (P1)</option>
+          <option value="70">70+ (P2)</option>
+          <option value="55">55+ (P3)</option>
+        </select>
+      </div>
+
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search jobs..."
+        id="searchInput"
+        onkeyup="debouncedSearch()"
+      />
+
+      <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+        <button class="btn" style="background: var(--bg);" onclick="selectVisibleJobs()">Select Visible</button>
+        <button class="btn" style="background: var(--bg);" onclick="clearSelections()">Clear</button>
+        <div class="bulk-actions" id="bulkActions">
+          <select id="bulkActionSelect" class="filter-select">
+            <option value="">Bulk Action...</option>
+            <option value="applied">Mark as Applied</option>
+            <option value="interview">Mark as Interview</option>
+            <option value="rejected">Mark as Rejected</option>
+            <option value="archived">Archive</option>
+            <option value="delete">Delete</option>
+          </select>
+          <button class="btn btn-primary" onclick="executeBulkAction()">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jobs Table -->
+    <div class="jobs-container">
+      <div class="jobs-header">
+        <h2>Jobs</h2>
+        <span id="jobCount" style="color: var(--text-muted); font-size: 0.875rem;">0 jobs</span>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 40px;"><input type="checkbox" id="selectAll" onchange="handleSelectAllCheckbox()"></th>
+              <th>Job</th>
+              <th>Score</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Verdict</th>
+              <th>Link</th>
+            </tr>
+          </thead>
+          <tbody id="jobsTableBody">
+            <tr>
+              <td colspan="7" class="loading">
+                <div class="spinner"></div>
+                Loading jobs...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Job Detail Modal -->
+  <div class="modal-overlay" id="jobModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalJobTitle">Job Details</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading...
+        </div>
+      </div>
+      <div class="modal-actions">
+        <select id="modalStatusSelect" class="filter-select">
+          <option value="new">New</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+          <option value="skipped">Skipped</option>
+        </select>
+        <button class="btn btn-primary" onclick="updateModalStatus()">Update Status</button>
+        <button class="btn btn-primary" onclick="saveModalFeedback()">Save Feedback</button>
+        <button class="btn" style="background: var(--bg);" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    let selectedJobs = new Set();
+    let currentJobId = null;
+    let searchTimeout = null;
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_BASE}/stats`);
+        const stats = await res.json();
+
+        document.getElementById('statsGrid').innerHTML = `
+          <div class="stat-card highlight">
+            <div class="stat-label">Total Jobs</div>
+            <div class="stat-value">${stats.total_jobs}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">New</div>
+            <div class="stat-value">${stats.new_jobs}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Applied</div>
+            <div class="stat-value">${stats.applied_jobs}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Interview</div>
+            <div class="stat-value">${stats.interview_jobs}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Offers</div>
+            <div class="stat-value">${stats.offer_jobs}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">P1 Jobs</div>
+            <div class="stat-value">${stats.p1_jobs}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg Score</div>
+            <div class="stat-value">${stats.mean_score}</div>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading stats:', error);
+        showToast('Failed to load stats', 'error');
+      }
+    }
+
+    // Load jobs
+    async function loadJobs() {
+      const status = document.getElementById('statusFilter').value;
+      const priority = document.getElementById('priorityFilter').value;
+      const verdict = document.getElementById('verdictFilter').value;
+      const minScore = document.getElementById('minScore').value;
+      const search = document.getElementById('searchInput').value;
+
+      const params = new URLSearchParams();
+      if (status) params.append('status', status);
+      if (priority) params.append('priority', priority);
+      if (verdict) params.append('verdict', verdict);
+      if (minScore) params.append('min_score', minScore);
+      if (search) params.append('search', search);
+      params.append('limit', '100');
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs?${params}`);
+        const jobs = await res.json();
+
+        const tbody = document.getElementById('jobsTableBody');
+        document.getElementById('jobCount').textContent = `${jobs.length} jobs`;
+
+        if (jobs.length === 0) {
+          document.getElementById('selectAll').checked = false;
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="empty-state">
+                <div class="empty-state-icon">No results</div>
+                <div>No jobs found</div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = jobs.map(job => `
+          <tr class="${selectedJobs.has(job.id) ? 'selected' : ''}" data-id="${job.id}">
+            <td>
+              <input type="checkbox" class="checkbox"
+                ${selectedJobs.has(job.id) ? 'checked' : ''}
+                onchange="toggleJobSelection(${job.id})">
+            </td>
+            <td>
+              <div class="job-title">${escapeHtml(job.title)}</div>
+              <div class="job-company">${escapeHtml(job.company)}</div>
+            </td>
+            <td>
+              ${job.fit_score !== null && job.fit_score !== undefined ? `
+                <div class="score-display">
+                  <span>${job.fit_score}</span>
+                  <div class="score-bar">
+                    <div class="score-fill ${getScoreClass(job.fit_score)}"
+                         style="width: ${job.fit_score}%"></div>
+                  </div>
+                </div>
+              ` : '-'}
+            </td>
+            <td>
+              ${job.apply_priority ? `<span class="badge badge-${job.apply_priority.toLowerCase()}">${job.apply_priority}</span>` : '-'}
+            </td>
+            <td>
+              <span class="badge badge-${(job.status || 'new').toLowerCase()}">${job.status || 'new'}</span>
+            </td>
+            <td>
+              ${job.human_verdict ? `<span class="badge badge-${job.human_verdict}">${job.human_verdict}</span>` : '-'}
+            </td>
+            <td>
+              ${job.url ? `<a href="${escapeHtml(job.url)}" target="_blank" class="job-link">Open</a>` : '-'}
+            </td>
+          </tr>
+        `).join('');
+
+        const allVisibleSelected = jobs.length > 0 && jobs.every(job => selectedJobs.has(job.id));
+        document.getElementById('selectAll').checked = allVisibleSelected;
+
+        // Add click handlers for row selection (excluding checkbox)
+        tbody.querySelectorAll('tr[data-id]').forEach(row => {
+          row.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'A') {
+              const id = parseInt(row.dataset.id);
+              openJobModal(id);
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error('Error loading jobs:', error);
+        showToast('Failed to load jobs', 'error');
+      }
+    }
+
+    // Open job modal
+    async function openJobModal(jobId) {
+      currentJobId = jobId;
+      document.getElementById('jobModal').classList.add('active');
+      document.getElementById('modalBody').innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading...
+        </div>
+      `;
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs/${jobId}`);
+        const job = await res.json();
+
+        document.getElementById('modalJobTitle').textContent = `${job.title} @ ${job.company}`;
+        document.getElementById('modalStatusSelect').value = job.status;
+
+        document.getElementById('modalBody').innerHTML = `
+          <div class="detail-section">
+            <h4>Job Details</h4>
+            <div class="detail-row">
+              <span class="detail-label">Company</span>
+              <span class="detail-value">${escapeHtml(job.company)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Location</span>
+              <span class="detail-value">${escapeHtml(job.location)} ${job.remote ? '(Remote)' : ''}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Posted</span>
+              <span class="detail-value">${escapeHtml(job.posted_date)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Salary</span>
+              <span class="detail-value">${escapeHtml(job.salary) || 'Not disclosed'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Apply Link</span>
+              <span class="detail-value">${job.url ? `<a href="${escapeHtml(job.url)}" target="_blank" class="job-link">Open job posting</a>` : 'Not available'}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>AI Analysis</h4>
+            <div class="detail-row">
+              <span class="detail-label">Fit Score</span>
+              <span class="detail-value">${job.fit_score ?? 'N/A'} / 100</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Priority</span>
+              <span class="detail-value">${job.apply_priority || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Interview Chance</span>
+              <span class="detail-value">${job.interview_chance || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">AI Recommendation</span>
+              <span class="detail-value">${job.should_apply ? 'Apply' : 'Do not apply'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Why Match</span>
+              <span class="detail-value">${escapeHtml(job.why_match) || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Biggest Gap</span>
+              <span class="detail-value">${escapeHtml(job.biggest_gap) || 'N/A'}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Human Feedback</h4>
+            <div class="detail-row">
+              <span class="detail-label">Verdict</span>
+              <span class="detail-value">${job.human_verdict ? `<span class="badge badge-${job.human_verdict}">${job.human_verdict}</span>` : 'Not set'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Human Score</span>
+              <span class="detail-value">${job.human_score !== null ? job.human_score + '/100' : 'Not set'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Feedback</span>
+              <span class="detail-value">${escapeHtml(job.human_feedback) || 'None'}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Tracking</h4>
+            <div class="detail-row">
+              <span class="detail-label">Status</span>
+              <span class="detail-value"><span class="badge badge-${(job.status || 'new').toLowerCase()}">${job.status || 'new'}</span></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Seen Count</span>
+              <span class="detail-value">${job.seen_count || 1}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">First Seen</span>
+              <span class="detail-value">${formatDateTime(job.first_seen_at)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Last Seen</span>
+              <span class="detail-value">${formatDateTime(job.last_seen_at)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Notes</span>
+              <span class="detail-value">${escapeHtml(job.notes) || 'None'}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Update Human Review</h4>
+            <div class="form-stack">
+              <div>
+                <label for="modalVerdictSelect" class="detail-label">Verdict</label>
+                <select id="modalVerdictSelect" class="filter-select" style="width: 100%; margin-top: 0.35rem;">
+                  <option value="">No verdict</option>
+                  <option value="apply" ${job.human_verdict === 'apply' ? 'selected' : ''}>Apply</option>
+                  <option value="skip" ${job.human_verdict === 'skip' ? 'selected' : ''}>Skip</option>
+                  <option value="save" ${job.human_verdict === 'save' ? 'selected' : ''}>Save</option>
+                  <option value="unsure" ${job.human_verdict === 'unsure' ? 'selected' : ''}>Unsure</option>
+                </select>
+              </div>
+              <div>
+                <label for="modalHumanScoreInput" class="detail-label">Human Score (0-100)</label>
+                <input id="modalHumanScoreInput" class="form-input" type="number" min="0" max="100" value="${job.human_score ?? ''}" />
+              </div>
+              <div>
+                <label for="modalFeedbackInput" class="detail-label">Feedback</label>
+                <textarea id="modalFeedbackInput" class="form-textarea">${escapeHtml(job.human_feedback) || ''}</textarea>
+              </div>
+              <div>
+                <label for="modalNotesInput" class="detail-label">Notes</label>
+                <textarea id="modalNotesInput" class="form-textarea">${escapeHtml(job.notes) || ''}</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Job Description</h4>
+            <div class="jd-text">${escapeHtml(job.jd_raw)}</div>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading job details:', error);
+        document.getElementById('modalBody').innerHTML = `
+          <div class="empty-state">
+            <div>Failed to load job details</div>
+          </div>
+        `;
+      }
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('jobModal').classList.remove('active');
+      currentJobId = null;
+    }
+
+    // Update status from modal
+    async function updateModalStatus() {
+      if (!currentJobId) return;
+
+      const newStatus = document.getElementById('modalStatusSelect').value;
+      const notes = document.getElementById('modalNotesInput')?.value?.trim() || null;
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs/${currentJobId}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus, notes: notes }),
+        });
+
+        if (res.ok) {
+          showToast(`Status updated to ${newStatus}`, 'success');
+          closeModal();
+          loadJobs();
+          loadStats();
+        } else {
+          throw new Error('Failed to update status');
+        }
+      } catch (error) {
+        showToast('Failed to update status', 'error');
+      }
+    }
+
+    async function saveModalFeedback() {
+      if (!currentJobId) return;
+
+      const verdict = document.getElementById('modalVerdictSelect')?.value || null;
+      const rawScore = document.getElementById('modalHumanScoreInput')?.value?.trim();
+      const feedback = document.getElementById('modalFeedbackInput')?.value?.trim() || null;
+      const notes = document.getElementById('modalNotesInput')?.value?.trim() || null;
+      const score = rawScore === '' ? null : Number(rawScore);
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs/${currentJobId}/feedback`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ verdict, score, feedback, notes }),
+        });
+
+        if (res.ok) {
+          showToast('Feedback saved', 'success');
+          await openJobModal(currentJobId);
+          loadJobs();
+          loadStats();
+        } else {
+          throw new Error('Failed to save feedback');
+        }
+      } catch (error) {
+        showToast('Failed to save feedback', 'error');
+      }
+    }
+
+    // Selection handling
+    function toggleJobSelection(jobId) {
+      if (selectedJobs.has(jobId)) {
+        selectedJobs.delete(jobId);
+      } else {
+        selectedJobs.add(jobId);
+      }
+      updateBulkActions();
+      loadJobs(); // Re-render to show selection state
+    }
+
+    function handleSelectAllCheckbox() {
+      const checkboxes = document.querySelectorAll('#jobsTableBody .checkbox');
+      const selectAll = document.getElementById('selectAll');
+
+      if (selectAll.checked) {
+        checkboxes.forEach(cb => {
+          const row = cb.closest('tr');
+          if (row.dataset.id) {
+            selectedJobs.add(parseInt(row.dataset.id));
+          }
+        });
+      } else {
+        selectedJobs.clear();
+      }
+      updateBulkActions();
+      loadJobs();
+    }
+
+    function selectVisibleJobs() {
+      document.querySelectorAll('#jobsTableBody tr[data-id]').forEach(row => {
+        selectedJobs.add(parseInt(row.dataset.id));
+      });
+      document.getElementById('selectAll').checked = true;
+      updateBulkActions();
+      loadJobs();
+    }
+
+    function clearSelections() {
+      selectedJobs.clear();
+      document.getElementById('selectAll').checked = false;
+      updateBulkActions();
+      loadJobs();
+    }
+
+    function updateBulkActions() {
+      const bulkActions = document.getElementById('bulkActions');
+      if (selectedJobs.size > 0) {
+        bulkActions.classList.add('active');
+      } else {
+        bulkActions.classList.remove('active');
+      }
+    }
+
+    async function executeBulkAction() {
+      const action = document.getElementById('bulkActionSelect').value;
+      if (!action || selectedJobs.size === 0) return;
+
+      const payload = {
+        job_ids: Array.from(selectedJobs),
+        action: action === 'delete' ? 'delete' : 'update_status',
+        value: action,
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs/bulk`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          showToast(`Applied ${action} to ${selectedJobs.size} jobs`, 'success');
+          selectedJobs.clear();
+          updateBulkActions();
+          loadJobs();
+          loadStats();
+        } else {
+          throw new Error('Bulk action failed');
+        }
+      } catch (error) {
+        showToast('Bulk action failed', 'error');
+      }
+    }
+
+    // Search with debounce
+    function debouncedSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(loadJobs, 300);
+    }
+
+    // Refresh data
+    function refreshData() {
+      loadStats();
+      loadJobs();
+      showToast('Data refreshed', 'success');
+    }
+
+    // Utility functions
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function getScoreClass(score) {
+      if (score >= 85) return 'high';
+      if (score >= 70) return 'medium';
+      return 'low';
+    }
+
+    function formatDateTime(value) {
+      if (!value) return 'Unknown';
+      const dt = new Date(value);
+      if (Number.isNaN(dt.getTime())) return value;
+      return dt.toLocaleString();
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('jobModal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        closeModal();
+      }
+    });
+
+    // Initial load
+    loadStats();
+    loadJobs();
+  </script>
+</body>
+</html>

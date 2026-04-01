@@ -1,0 +1,67 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.eggs/
+*.egg-info/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Testing
+tests/
+test_*.py
+
+# Documentation
+*.md
+!README.md
+!CASE_STUDY.md
+
+# Data files (mounted as volumes)
+*.db
+*.sqlite
+*.pdf
+*.txt
+
+# Output files
+ranked_jobs.md
+job_tracker.md
+job_dashboard.html
+
+# Metrics (persisted in volume)
+.metrics/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml

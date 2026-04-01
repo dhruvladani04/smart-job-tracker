@@ -8,6 +8,7 @@ from .apify_scraper import ApifyScraper
 from .gemini_scorer import GeminiScorer
 from .orchestrator import JobSearchOrchestrator, DEFAULT_SEARCHES
 from .models import init_db, Job, SearchQuery, Company
+from .metrics import MetricsCollector, LatencyTracker, get_metrics_collector
 
 __all__ = [
     "ApifyScraper",
@@ -18,4 +19,7 @@ __all__ = [
     "Job",
     "SearchQuery",
     "Company",
+    "MetricsCollector",
+    "LatencyTracker",
+    "get_metrics_collector",
 ]

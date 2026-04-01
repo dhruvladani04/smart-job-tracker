@@ -17,6 +17,9 @@
 ## 2. Configure
 
 ```bash
+# Install all local dependencies first
+uv sync --all-extras
+
 # Copy example env file
 cp .env.example .env
 
@@ -38,6 +41,12 @@ You can also pass custom resume files with `--resume`.
 ```bash
 # Full pipeline (searches 5 queries, scores all jobs, generates report)
 uv run job-scraper run
+
+# Start the FastAPI dashboard locally
+uv run --extra web uvicorn job_scraper.web.app:app --reload
+
+# Run tests
+uv run --extra dev pytest
 
 # Single custom search
 uv run job-scraper search "Product Manager" --location "Bangalore"
