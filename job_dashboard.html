@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Job Tracker Dashboard</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --panel: #fffaf0;
+      --ink: #1f2a1f;
+      --muted: #657166;
+      --line: #d8d0c2;
+      --accent: #1f7a5c;
+      --applied: #0f766e;
+      --reviewed: #8a6d1a;
+      --new: #3b82f6;
+      --skipped: #8b5e34;
+      --rejected: #9f1239;
+      --interview: #7c3aed;
+      --offer: #166534;
+      --archived: #6b7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(31,122,92,0.08), transparent 30%),
+        linear-gradient(180deg, #f8f4ec 0%, var(--bg) 100%);
+    }
+    .page {
+      width: min(1400px, calc(100% - 32px));
+      margin: 24px auto 56px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(31,122,92,0.96), rgba(21,58,45,0.96));
+      color: #fef8ef;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(31, 42, 31, 0.16);
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+    .hero p {
+      margin: 0;
+      color: rgba(254,248,239,0.86);
+      max-width: 820px;
+      line-height: 1.5;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 20px 0 28px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 20px rgba(31, 42, 31, 0.06);
+    }
+    .card-label {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .card-value {
+      font-size: 2rem;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+    .section {
+      background: rgba(255,250,240,0.88);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 18px;
+      overflow: hidden;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+    .section-head span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.95rem;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+    .job-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .job-meta {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .detail-row td {
+      padding-top: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .badge {
+      display: inline-flex;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      text-transform: capitalize;
+      color: white;
+    }
+    .badge-new { background: var(--new); }
+    .badge-reviewed { background: var(--reviewed); }
+    .badge-applied { background: var(--applied); }
+    .badge-skipped { background: var(--skipped); }
+    .badge-rejected { background: var(--rejected); }
+    .badge-interview { background: var(--interview); }
+    .badge-offer { background: var(--offer); }
+    .badge-archived { background: var(--archived); }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 700px) {
+      .page {
+        width: min(100% - 16px, 1400px);
+      }
+      .hero {
+        padding: 20px;
+      }
+      .section {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Job Tracker Dashboard</h1>
+      <p>Open this file after each run to review AI recommendations, mark applied jobs, compare your own verdicts against the AI score, and keep one visible place for the whole search.</p>
+      <p>Generated: 2026-04-01 05:45</p>
+    </section>
+    <section class="cards">
+      
+                <div class="card">
+                  <div class="card-label">Tracked Jobs</div>
+                  <div class="card-value">54</div>
+                </div>
+                
+                <div class="card">
+                  <div class="card-label">Applied</div>
+                  <div class="card-value">1</div>
+                </div>
+                
+                <div class="card">
+                  <div class="card-label">Interview</div>
+                  <div class="card-value">0</div>
+                </div>
+                
+                <div class="card">
+                  <div class="card-label">Offers</div>
+                  <div class="card-value">0</div>
+                </div>
+                
+                <div class="card">
+                  <div class="card-label">Need Review</div>
+                  <div class="card-value">53</div>
+                </div>
+                
+    </section>
+    
+                <section class="section">
+                  <div class="section-head">
+                    <h2>New</h2>
+                    <span>53 job(s)</span>
+                  </div>
+                  <div class="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Job</th>
+                          <th>AI</th>
+                          <th>Priority</th>
+                          <th>Status</th>
+                          <th>Verdict</th>
+                          <th>Human</th>
+                          <th>Seen</th>
+                          <th>Last Seen</th>
+                          <th>Link</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                    <tr>
+                      <td>3</td>
+                      <td>
+                        <div class="job-title">Product Management Intern</div>
+                        <div class="job-meta">SuccessKPI · Remote, IN</div>
+                      </td>
+                      <td>92</td>
+                      <td>P1</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://successkpi.com/careers/" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate is a near-perfect technical match for the &#x27;GenAI Prototyping&#x27; requirement, having built multi-agent AI systems and RAG pipelines. He also has direct PM intern experience (WebMobi360) and has handled MVP scope and feature prioritization.</div>
+                        <div><strong>Gap:</strong> The role places a heavy emphasis on Product Marketing Assets (one-pagers, slides, messaging) and prefers Marketing/Business degrees; the candidate&#x27;s resume is highly technical/engineering-focused and lacks evidence of marketing collateral or &#x27;product storytelling&#x27; beyond an investor pitch deck.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>36</td>
+                      <td>
+                        <div class="job-title">Business Analyst</div>
+                        <div class="job-meta">Livspace · Bengaluru, Karnataka, India</div>
+                      </td>
+                      <td>72</td>
+                      <td>P2</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4392192587" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate&#x27;s current role as a Data &amp; Automation Intern directly aligns with the job&#x27;s core requirements for tracking and reporting data. Their technical proficiency in SQL and Python provides a strong analytical foundation for Business Analyst responsibilities.</div>
+                        <div><strong>Gap:</strong> The candidate is still a student (graduating 2026) and lacks &#x27;Budget Management&#x27; experience, which is a specific responsibility mentioned in the listing.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>50</td>
+                      <td>
+                        <div class="job-title">Junior Product Manager (Digital Operations)</div>
+                        <div class="job-meta">Solomon Page · Unknown</div>
+                      </td>
+                      <td>71</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4395058797" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The role specifically asks for a background in data/automation and an interest in AI to drive operational efficiency, which aligns perfectly with your current internship at Impresa.ai and your AI-driven projects like Recruit-AI.</div>
+                        <div><strong>Gap:</strong> The listing requires 2+ years of professional experience, whereas you are a current student graduating in 2026. Additionally, as an NYC-based contract role, there may be unstated geographic or work-authorization constraints for a candidate currently in India.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>2</td>
+                      <td>
+                        <div class="job-title">AI Product Manager (Qelp)</div>
+                        <div class="job-meta">Foundever · Remote, IN</div>
+                      </td>
+                      <td>68</td>
+                      <td>P2</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>4</td>
+                      <td>-</td>
+                      <td><a href="https://jobs.foundever.com/job/Remote-AI-Product-Manager-%28Qelp%29-Any/1376516100/?" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has exceptional technical alignment with Foundever&#x27;s GenAI focus, specifically in multi-agent workflows and LLM integration, which is the core of the Qelp product vision. They possess the required B.Tech in Computer Engineering and hands-on experience with the exact tech stack mentioned (Python, SQL, AI pipelines).</div>
+                        <div><strong>Gap:</strong> Professional seniority. The role requires 3-5 years of experience as a PM/PO, while the candidate is a current student/intern graduating in 2026. Most recruiters will filter out candidates who are still in university regardless of technical skill.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>9</td>
+                      <td>
+                        <div class="job-title">Associate Product Manager</div>
+                        <div class="job-meta">QuinStreet · Unknown</div>
+                      </td>
+                      <td>66</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4391881568" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate demonstrates strong technical skills in AI and data automation, which aligns with QuinStreet&#x27;s focus on AI-driven matching technologies. Evidence of owning MVPs and defining metrics in internships shows product mindset.</div>
+                        <div><strong>Gap:</strong> The candidate is a current student (graduating 2026) with mostly internship experience, whereas the role requires 2+ years of professional experience in product management or analytics.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>43</td>
+                      <td>
+                        <div class="job-title">Product Manager</div>
+                        <div class="job-meta">TrueCar, Inc. · Unknown</div>
+                      </td>
+                      <td>62</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4390984868" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate demonstrates strong execution skills in translating technical requirements into user stories, which matches TrueCar&#x27;s need for an &#x27;engine&#x27; to drive squad delivery. Experience with mobile app development and conversational AI aligns with the &#x27;Mobile-First&#x27; and &#x27;Conversational UI&#x27; requirements.</div>
+                        <div><strong>Gap:</strong> The candidate is currently a student/intern and lacks the full-time professional PM experience typically required for a mid-market public company like TrueCar. Additionally, there is zero evidence of domain knowledge in Automotive, CMS systems, or AdTech (CDPs/ad-slots).</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>18</td>
+                      <td>
+                        <div class="job-title">Product Manager I, Ads</div>
+                        <div class="job-meta">Google · New York, NY</div>
+                      </td>
+                      <td>62</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4377787770" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Strong technical foundation in Agentic AI and GenAI aligns with Google&#x27;s focus on &#x27;state-of-the-art technologies&#x27; in Ads. High academic performance (9.4 CGPA) and IIT program participation suggest the high bar for entry.</div>
+                        <div><strong>Gap:</strong> Experience duration; the listing requires 3 years of PM/technical experience, whereas the candidate is a current student graduating in 2026 with approximately 9 months of total internship experience.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>56</td>
+                      <td>
+                        <div class="job-title">Product Manager</div>
+                        <div class="job-meta">Eminence Technology · PB, IN</div>
+                      </td>
+                      <td>55</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="http://in.indeed.com/job/product-manager-dccfb814471a11c5" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has a very strong technical background in GenAI, Agentic workflows, and LLM application development, which perfectly aligns with the company&#x27;s focus on AI-driven products and intelligent automation.</div>
+                        <div><strong>Gap:</strong> Professional experience seniority. The role requires 4–8 years of experience, whereas the candidate is a current student graduating in 2026 with approximately 10 months of internship experience.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>17</td>
+                      <td>
+                        <div class="job-title">Product Manager</div>
+                        <div class="job-meta">Meta · Menlo Park, CA</div>
+                      </td>
+                      <td>53</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>4</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4199410451" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has exceptional alignment with the &#x27;Preferred Qualifications&#x27; regarding AI skill development, specifically agent orchestration, LangGraph, and prompt engineering, which are core to Meta&#x27;s current AI roadmap.</div>
+                        <div><strong>Gap:</strong> Experience seniority. The role requires a minimum of 5 years of industry experience and 2 years of formal Product Management experience; the candidate is currently a student with only internship experience.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>38</td>
+                      <td>
+                        <div class="job-title">Product Manager</div>
+                        <div class="job-meta">SaaS · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://saasglobal.teamtailor.com/jobs/7451461-product-manager" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>39</td>
+                      <td>
+                        <div class="job-title">Product Data Manager – Stone &amp; Porcelain Products (Remote – India)</div>
+                        <div class="job-meta">Evon Ceramics · Remote, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="http://in.indeed.com/job/product-data-manager-stone-porcelain-products-remote-india-5252dd29f2133cc5" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>40</td>
+                      <td>
+                        <div class="job-title">Senior Product Manager</div>
+                        <div class="job-meta">NETomi · Remote, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://jobs.lever.co/netomi/71934132-49f9-4553-9870-e70f77ec9819?lever-source=Indeed" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>41</td>
+                      <td>
+                        <div class="job-title">Technical Product Manager</div>
+                        <div class="job-meta">DYNE Group · Remote, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://dyneits.hirehive.com/technical-product-manager-fully-remote-from-anywhere-in-india-J1MtUI?source=Indeed" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>42</td>
+                      <td>
+                        <div class="job-title">Director, Product Management Operations</div>
+                        <div class="job-meta">H&amp;R Block · Missouri, United States</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4371637778" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>44</td>
+                      <td>
+                        <div class="job-title">Senior Product Manager</div>
+                        <div class="job-meta">Curana Health · Unknown</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4378986845" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>45</td>
+                      <td>
+                        <div class="job-title">Senior Product Manager</div>
+                        <div class="job-meta">BriteCore · New York, NY</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4378895743" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>46</td>
+                      <td>
+                        <div class="job-title">Sr. Product Manager - Bend Platform</div>
+                        <div class="job-meta">Lyra Health · Unknown</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4392152493" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>19</td>
+                      <td>
+                        <div class="job-title">Manager-Financial Systems</div>
+                        <div class="job-meta">American Express · HR, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://aexp.eightfold.ai/careers/job/41073105" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>26</td>
+                      <td>
+                        <div class="job-title">Product Manager</div>
+                        <div class="job-meta">Meta · Los Angeles, CA</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4198801765" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>32</td>
+                      <td>
+                        <div class="job-title">Senior Business Analyst</div>
+                        <div class="job-meta">Tata Technologies · Bengaluru, Karnataka, India</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4392509652" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>33</td>
+                      <td>
+                        <div class="job-title">Business Analyst</div>
+                        <div class="job-meta">Deloitte · Bangalore Urban, Karnataka, India</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4393339912" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>34</td>
+                      <td>
+                        <div class="job-title">Business Analyst – FinTech / Payments Domain</div>
+                        <div class="job-meta">Endava · Bengaluru, Karnataka, India</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4340959317" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>35</td>
+                      <td>
+                        <div class="job-title">Business Analyst</div>
+                        <div class="job-meta">Emirates NBD · Bangalore Urban, Karnataka, India</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4390577401" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>16</td>
+                      <td>
+                        <div class="job-title">Product Manager</div>
+                        <div class="job-meta">Meta · New York, NY</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>4</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4199408700" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>7</td>
+                      <td>
+                        <div class="job-title">Product Manager I</div>
+                        <div class="job-meta">Snapsheet Inc · Unknown</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4391101222" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>8</td>
+                      <td>
+                        <div class="job-title">Product Manager</div>
+                        <div class="job-meta">Meta · Unknown</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4199412186" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>4</td>
+                      <td>
+                        <div class="job-title">Field &amp; Channel Marketing Manager</div>
+                        <div class="job-meta">Netwrix · Remote, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://ats.rippling.com/netwrix-corporation/jobs/ec1c8798-76a9-4008-a583-c70a7d855b5c?jobSite=Indeed" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>5</td>
+                      <td>
+                        <div class="job-title">Marketing Manager - High Growth Markets</div>
+                        <div class="job-meta">Cytiva · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://jobs.danaher.com/global/en/job/DANAGLOBALR1306318EXTERNALENGLOBAL/Marketing-Manager-High-Growth-Markets?utm_source=indeed&amp;utm_medium=phenom-feeds" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>1</td>
+                      <td>
+                        <div class="job-title">Digital Marketing Manager</div>
+                        <div class="job-meta">Brainstorm Force IT Pune · Remote, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="http://in.indeed.com/job/digital-marketing-manager-02f227c89d473057" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>10</td>
+                      <td>
+                        <div class="job-title">Associate Product Manager</div>
+                        <div class="job-meta">NBCUniversal · New York, NY</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4392956249" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>11</td>
+                      <td>
+                        <div class="job-title">General &amp; Modern Trade Manager</div>
+                        <div class="job-meta">Prestige Pursuits Pvt Ltd.(Channel Partner P&amp;G) · DL, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="http://in.indeed.com/job/general-modern-trade-manager-c24adf1e562dd617" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>12</td>
+                      <td>
+                        <div class="job-title">Sales Manager - Two Wheeler Loans - Dumka - Tower Chowk - JM</div>
+                        <div class="job-meta">Tata Capital Ltd · IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://eofh.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001/requisitions/preview/43758" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>13</td>
+                      <td>
+                        <div class="job-title">Customer Sales Executive - Two Wheeler Loans - Bhubaneshwar - Samantarapur - CSE</div>
+                        <div class="job-meta">Tata Capital Ltd · OR, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://eofh.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001/requisitions/preview/43745" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>14</td>
+                      <td>
+                        <div class="job-title">Customer Service Executive - Personal Loans - Mix - Bhopal - Alankar Complex - CSE</div>
+                        <div class="job-meta">Tata Capital Ltd · MP, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://eofh.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001/requisitions/preview/43753" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>15</td>
+                      <td>
+                        <div class="job-title">Senior Relationship Manager -Emerging Corporate - Sales -Bengaluru - Prestige Corniche - MM</div>
+                        <div class="job-meta">Tata Capital Ltd · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://eofh.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001/requisitions/preview/43749" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>20</td>
+                      <td>
+                        <div class="job-title">Manager -Data Science</div>
+                        <div class="job-meta">American Express · HR, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://aexp.eightfold.ai/careers/job/40745227" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>21</td>
+                      <td>
+                        <div class="job-title">Performance Marketer</div>
+                        <div class="job-meta">Softhunters Technology · RJ, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="http://in.indeed.com/job/performance-marketer-23e13ac555ee9726" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>22</td>
+                      <td>
+                        <div class="job-title">Computer Scientist 2</div>
+                        <div class="job-meta">Adobe · UP, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://careers.adobe.com/us/en/job/ADOBUSR167229EXTERNALENUS/Computer-Scientist-2?utm_source=indeed&amp;utm_medium=phenom-feeds" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>23</td>
+                      <td>
+                        <div class="job-title">Machine Learning Engineer - 4</div>
+                        <div class="job-meta">Adobe · UP, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://careers.adobe.com/us/en/job/ADOBUSR167161EXTERNALENUS/Machine-Learning-Engineer-4?utm_source=indeed&amp;utm_medium=phenom-feeds" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>27</td>
+                      <td>
+                        <div class="job-title">Customer Support Analyst</div>
+                        <div class="job-meta">Entertainment Project Services · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://epack.rec.pro.ukg.net/EPS1500EPSP/JobBoard/99876882-5314-40ba-9044-904ae76a629c/OpportunityDetail?opportunityId=6dad9450-b950-4b7b-8ba7-508ed5cd9ba3&amp;postingId=fc122031-cad3-42bd-948f-484d9be039ac" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>28</td>
+                      <td>
+                        <div class="job-title">Business Analyst</div>
+                        <div class="job-meta">Euphoric Thought Technologies Pvt Ltd · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="http://in.indeed.com/job/business-analyst-fac1e5e525cde277" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>29</td>
+                      <td>
+                        <div class="job-title">PMO Analyst</div>
+                        <div class="job-meta">SyndiGO · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://grnh.se/ytlhl6hy4us" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>30</td>
+                      <td>
+                        <div class="job-title">Business Analyst, CLM</div>
+                        <div class="job-meta">Standard Chartered Bank · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://jobs.standardchartered.com/job/Business-Analyst%2C-CLM/51411-en_GB" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>31</td>
+                      <td>
+                        <div class="job-title">Assistant Vice President - Decision Sciences</div>
+                        <div class="job-meta">HSBC · KA, IN</div>
+                      </td>
+                      <td>50</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://apply.careers.hsbc.com/job/Bangalore-Assistant-Vice-President-Decision-Sciences-KA-560103/1351359557/?feedId=417557&amp;utm_source=Indeed&amp;utm_campaign=HSBC_Indeed" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> Error during Gemini scoring.</div>
+                        <div><strong>Gap:</strong> Cannot send a request, as the client has been closed.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>64</td>
+                      <td>
+                        <div class="job-title">Application Support Analyst</div>
+                        <div class="job-meta">CDM Smith · TN, IN</div>
+                      </td>
+                      <td>42</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://sjobs.brassring.com/TGnewUI/Search/home/HomeWithPreLoad?partnerid=25038&amp;siteid=5220&amp;PageType=JobDetails&amp;jobid=1601930" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has a strong technical foundation in SQL and Python, which are essential for the role&#x27;s troubleshooting and data inconsistency requirements. His experience in agile environments and documentation (test plans, user stories) aligns with the job&#x27;s focus on process and collaboration.</div>
+                        <div><strong>Gap:</strong> The job requires 3+ years of professional experience in Application Support and ITIL frameworks, whereas the candidate is a student (graduating 2026) with only internship experience primarily focused on AI/Development and Product Management.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>66</td>
+                      <td>
+                        <div class="job-title">Product Manager - GenAI</div>
+                        <div class="job-meta">Eli Lilly · TS, IN</div>
+                      </td>
+                      <td>41</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://careers.lilly.com/us/en/job/LILLUSR103673EXTERNALENUS/Product-Manager-GenAI?utm_source=indeed&amp;utm_medium=phenom-feeds" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has exceptional technical alignment with the GenAI requirements, specifically expertise in LangChain, RAG pipelines, and multi-agent orchestration which are core to the role.</div>
+                        <div><strong>Gap:</strong> The job requires 10-15 years of total experience and 5+ years specifically in Product Management, whereas the candidate is a current student/recent graduate with less than 1 year of internship experience.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>73</td>
+                      <td>
+                        <div class="job-title">Senior Full Stack Developer</div>
+                        <div class="job-meta">CDM Smith · TN, IN</div>
+                      </td>
+                      <td>35</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://sjobs.brassring.com/TGnewUI/Search/home/HomeWithPreLoad?partnerid=25038&amp;siteid=5220&amp;PageType=JobDetails&amp;jobid=1601934" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has experience with React and JavaScript, which are part of the required frontend stack, and demonstrates strong understanding of Agile methodologies and sprint planning.</div>
+                        <div><strong>Gap:</strong> The role requires 5+ years of professional experience and proficiency in the .NET ecosystem (C#, ASP.NET), whereas the candidate is a current student/intern with a Python/MERN-focused background.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>77</td>
+                      <td>
+                        <div class="job-title">Senior STEM Content Analyst</div>
+                        <div class="job-meta">Clarivate · TN, IN</div>
+                      </td>
+                      <td>31</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://careers.clarivate.com/job/CLACLAGBJREQ134841EXTERNALENGB/Senior-STEM-Content-Analyst?utm_source=indeed&amp;utm_medium=phenom-feeds" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has strong technical expertise in Agentic AI and LLM workflows, which aligns well with the job&#x27;s requirement for optimizing AI-assisted editorial workflows and content generation.</div>
+                        <div><strong>Gap:</strong> The role requires a minimum of 5 years of specialized experience in Medical Device/IVD Regulatory Affairs (FDA, EMA, MDR); the candidate is a current student graduating in 2026 with zero domain experience in regulatory compliance.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>76</td>
+                      <td>
+                        <div class="job-title">PRODUCT MANAGER L1</div>
+                        <div class="job-meta">Wipro · MH, IN</div>
+                      </td>
+                      <td>31</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://careers.wipro.com/job/PRODUCT-MANAGER-L1/155277-en_US" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has hands-on experience in drafting user stories, backlog grooming, and UAT from internships at WebMobi360 and MitJayn, which aligns with the tactical execution requirements of the role.</div>
+                        <div><strong>Gap:</strong> There is a massive seniority gap; the job requires 8-10 years of experience and formal team management (hiring, performance reviews), while the candidate is a 2026 graduate with only internship experience.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>78</td>
+                      <td>
+                        <div class="job-title">DEVELOPER L3</div>
+                        <div class="job-meta">Wipro · MH, IN</div>
+                      </td>
+                      <td>30</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://careers.wipro.com/job/DEVELOPER-L3/155279-en_US" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has a solid understanding of the Software Development Life Cycle (SDLC), requirement gathering, and technical documentation, which aligns with the &#x27;Role Purpose&#x27; and &#x27;Do&#x27; sections of the Wipro listing.</div>
+                        <div><strong>Gap:</strong> The job requires 3-5 years of professional experience and mandatory Java skills; the candidate is a 2026 graduate with &lt;1 year of internship experience and no Java listed in their tech stack.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>84</td>
+                      <td>
+                        <div class="job-title">Web Technical Lead</div>
+                        <div class="job-meta">W. L. Gore &amp; Associates · KA, IN</div>
+                      </td>
+                      <td>22</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://wlgore.jobs.hr.cloud.sap/job/Web-Technical-Lead/1198-en_US" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has a strong academic background in Computer Engineering and experience with web technologies like JavaScript and SQL, which are secondary requirements for the role.</div>
+                        <div><strong>Gap:</strong> The candidate is a current student/recent intern, whereas the role requires 5-7 years of professional experience as a Technical Lead, specifically with Drupal and PHP—technologies entirely missing from the candidate&#x27;s profile.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>85</td>
+                      <td>
+                        <div class="job-title">DEVELOPER L4</div>
+                        <div class="job-meta">Wipro · KA, IN</div>
+                      </td>
+                      <td>21</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://careers.wipro.com/job/DEVELOPER-L4/155216-en_US" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate has a strong technical background in Computer Engineering and experience with SQL and Python, which are baseline requirements for a Developer L4 role at a technology services firm like Wipro.</div>
+                        <div><strong>Gap:</strong> The job requires 5-8 years of experience and mandatory expertise in &#x27;Kinaxis Supply Planning.&#x27; The candidate is a student graduating in 2026 with no Kinaxis experience and only internship-level tenure.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                    <tr>
+                      <td>90</td>
+                      <td>
+                        <div class="job-title">Technical Manager - Robotics &amp; AI</div>
+                        <div class="job-meta">VGreenTek · KL, IN</div>
+                      </td>
+                      <td>11</td>
+                      <td>P3</td>
+                      <td><span class="badge badge-new">new</span></td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>1</td>
+                      <td>-</td>
+                      <td><a href="https://vgreentek.oorwin.ai/#/careers/index.html/job/details/758a25f7dd163311b02efd5de19535312f7c1225?source=indeed&amp;postedby=11" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The only overlap exists in Python programming and a general &#x27;AI&#x27; focus, specifically within your recent internships and the IIT Patna program.</div>
+                        <div><strong>Gap:</strong> Extreme seniority and domain mismatch. The role requires 8+ years of experience in Robotics, SLAM, and Computer Vision, while you are a current student with ~1 year of internship experience in GenAI and software.</div>
+                        <div><strong>Feedback:</strong> -</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+                
+                <section class="section">
+                  <div class="section-head">
+                    <h2>Applied</h2>
+                    <span>1 job(s)</span>
+                  </div>
+                  <div class="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Job</th>
+                          <th>AI</th>
+                          <th>Priority</th>
+                          <th>Status</th>
+                          <th>Verdict</th>
+                          <th>Human</th>
+                          <th>Seen</th>
+                          <th>Last Seen</th>
+                          <th>Link</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                    <tr>
+                      <td>6</td>
+                      <td>
+                        <div class="job-title">Associate Product Manager</div>
+                        <div class="job-meta">Samsara · Unknown</div>
+                      </td>
+                      <td>82</td>
+                      <td>P1</td>
+                      <td><span class="badge badge-applied">applied</span></td>
+                      <td>apply</td>
+                      <td>85</td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td><a href="https://www.linkedin.com/jobs/view/4363983099" target="_blank" rel="noreferrer">Open</a></td>
+                    </tr>
+                    <tr class="detail-row">
+                      <td></td>
+                      <td colspan="8">
+                        <div><strong>AI:</strong> The candidate is a near-perfect match for the APM cohort profile: a technical background (Computer Engineering), graduating in Spring 2026, a high GPA (9.4/10), and zero years of full-time experience. His experience building &#x27;Recruit-AI&#x27; from discovery to MVP directly satisfies the requirement for a &#x27;builder&#x27; who has founded or led a product end-to-end.</div>
+                        <div><strong>Gap:</strong> The candidate is currently based in India, while the role explicitly requires being based in the San Francisco headquarters for the duration of the program. There is no mention of US work authorization or relocation flexibility beyond the company&#x27;s bonus.</div>
+                        <div><strong>Feedback:</strong> Good fit, AI was right</div>
+                      </td>
+                      <td></td>
+                    </tr>
+                    
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+                
+  </div>
+</body>
+</html>
