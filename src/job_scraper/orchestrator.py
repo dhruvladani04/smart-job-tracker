@@ -63,6 +63,20 @@ DEFAULT_SEARCHES = [
     },
 ]
 
+MAPPING_REGISTRY = {
+    "generic": {
+        "title": ["title", "job_title"],
+        "company": ["company", "company_name", "employer"],
+        "location": ["location", "job_location", "search_location"],
+        "remote": ["is_remote"],
+        "posted_date": ["posted_date", "date_posted", "posted_at"],
+        "salary": ["salary", "compensation"],
+        "url": ["url", "job_url", "official_url", "platform_url"],
+        "jd_raw": ["description", "job_description", "jd", "summary"],
+    },
+    # Specific actor mappings can be added here (e.g., "linkedin_jobs": {...})
+}
+
 
 class JobSearchOrchestrator:
     """
@@ -104,37 +118,29 @@ class JobSearchOrchestrator:
         return f"{title}|{company}|{location}"
 
     def _normalize_job(self, raw_job: dict, source: str) -> dict:
-        """Normalize job data from various Apify actors."""
-        # Handle different field names from different actors
-        return {
-            "title": raw_job.get("title") or raw_job.get("job_title") or "Unknown",
-            "company": raw_job.get("company")
-            or raw_job.get("company_name")
-            or raw_job.get("employer")
-            or "Unknown",
-            "location": raw_job.get("location")
-            or raw_job.get("job_location")
-            or raw_job.get("search_location")
-            or "",
-            "remote": bool(raw_job.get("is_remote"))
-            or "remote" in str(raw_job.get("location", "")).lower(),
-            "posted_date": raw_job.get("posted_date")
-            or raw_job.get("date_posted")
-            or raw_job.get("posted_at")
-            or "Unknown",
-            "salary": raw_job.get("salary") or raw_job.get("compensation") or "",
-            "url": raw_job.get("url")
-            or raw_job.get("job_url")
-            or raw_job.get("official_url")
-            or raw_job.get("platform_url")
-            or "",
-            "jd_raw": raw_job.get("description")
-            or raw_job.get("job_description")
-            or raw_job.get("jd")
-            or raw_job.get("summary")
-            or "",
-            "source": source,
-        }
+        """Normalize job data from various Apify actors using a mapping registry."""
+        # Get mapping for the specific source or fall back to generic
+        mapper = MAPPING_REGISTRY.get(source, MAPPING_REGISTRY["generic"])
+        normalized = {}
+
+        for field, keys in mapper.items():
+            # Find the first key that exists and has a truthy value
+            val = next((raw_job.get(k) for k in keys if raw_job.get(k)), None)
+
+            # Default "Unknown" for title/company, empty string otherwise
+            if val is None:
+                normalized[field] = "Unknown" if field in ("title", "company") else ""
+            else:
+                normalized[field] = val
+
+        # Special handling for 'remote' boolean logic
+        # Check if explicitly marked remote OR if 'remote' is in the location string
+        remote_val = normalized.get("remote")
+        is_remote = bool(remote_val) or "remote" in str(raw_job.get("location", "")).lower()
+        normalized["remote"] = is_remote
+
+        normalized["source"] = source
+        return normalized
 
     def _normalize_url(self, url: str) -> str:
         """Normalize URLs for cross-run deduplication."""
