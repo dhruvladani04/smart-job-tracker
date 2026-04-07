@@ -18,6 +18,12 @@ def test_db_path(tmp_path: Path) -> str:
 
 
 @pytest.fixture
+def test_resume_path() -> str:
+    """Path to test resume file."""
+    return str(Path(__file__).parent / "test_resume.txt")
+
+
+@pytest.fixture
 def sample_job_data() -> dict:
     """Sample job data for testing."""
     return {
