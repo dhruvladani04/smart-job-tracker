@@ -230,16 +230,17 @@ class TestEnsureSqliteSchema:
 
     def test_backfill_missing_columns(self, test_db_path: str):
         """Test adding missing columns to existing table."""
+        from sqlalchemy import text
         # Create table with minimal columns
         engine = create_engine(test_db_path.replace("sqlite:///", "sqlite:///"))
 
         # Create a minimal jobs table
         with engine.begin() as conn:
-            conn.execute(Base.metadata.tables['jobs'].create())
-            conn.execute("""
+            Base.metadata.tables['jobs'].create(bind=conn)
+            conn.execute(text("""
                 INSERT INTO jobs (title, company, scraped_at)
                 VALUES ('Test Job', 'Test Corp', datetime('now'))
-            """)
+            """))
 
         # Run schema backfill
         _ensure_sqlite_schema(engine)

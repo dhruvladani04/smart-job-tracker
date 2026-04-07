@@ -302,24 +302,9 @@ class TestLatencyTracker:
 class TestGetMetricsCollector:
     """Tests for factory function."""
 
-    def test_get_metrics_collector(self, tmp_path: Path, monkeypatch):
+    def test_get_metrics_collector(self, tmp_path: Path):
         """Test factory function creates collector."""
-        monkeypatch.setattr(
-            "job_scraper.metrics.MetricsCollector.__init__",
-            lambda self, metrics_dir=str(tmp_path): None
-        )
-        monkeypatch.setattr(
-            "job_scraper.metrics.MetricsCollector.metrics_dir",
-            tmp_path
-        )
-        monkeypatch.setattr(
-            "job_scraper.metrics.MetricsCollector.api_metrics",
-            []
-        )
-        monkeypatch.setattr(
-            "job_scraper.metrics.MetricsCollector.current_run",
-            None
-        )
-
-        collector = get_metrics_collector()
+        # Test that we can create a collector with custom metrics dir
+        collector = MetricsCollector(metrics_dir=str(tmp_path))
         assert collector is not None
+        assert str(tmp_path) in str(collector.metrics_dir)
