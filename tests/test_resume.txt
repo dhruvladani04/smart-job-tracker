@@ -1,0 +1,58 @@
+Dhruv Ladani
+Aspiring Product Manager | GenAI & AI Products
+dhruvladani04@gmail.com | 9429082869 | Gujarat, India
+
+PROFESSIONAL SUMMARY
+Product-driven and analytical aspiring Product Manager with hands-on experience building AI-powered products from problem discovery
+to launch. Skilled in user research, roadmap planning, metrics definition, and cross-functional execution. Strong foundation in GenAI,
+agentic workflows, and data-driven product decision-making.
+
+EDUCATION
+Product Management and Agentic AI Program | IIT Patna | 2025-2026 | Online
+Bachelor of Technology in Computer Engineering | PDEU, Gujarat | 2022-2026 | CGPA: 9.4
+
+PROFESSIONAL EXPERIENCE
+
+Data & Automation Intern | Impresa.ai Consulting | January 2026 - Present | Ahmedabad
+- Working on SQL-based data extraction, transformation, and reporting workflows for internal systems
+- Developing Python automation scripts to streamline repetitive data validation and operational tasks
+- Assisting in building reusable utilities for dataset preprocessing, monitoring, and workflow automation
+
+AI/ML Intern | WebMobi360 (B2B AI Products) | May 2025 - August 2025 | Remote
+- Translated business requirements into user stories, acceptance criteria, and sprint tasks for enterprise AI platforms
+- Integrated Generative AI and LLM workflows to automate operational processes, improving workflow efficiency by approximately 15%
+- Conducted usability testing across three internal applications, reducing navigation-related issues by 20%
+
+Mobile App Development Intern | MitJayn Corporation | October 2024 - December 2024 | Remote
+- Owned the alpha testing program for a healthcare management platform serving patients and providers
+- Created structured test plans and consolidated feedback into more than 50 prioritized backlog items
+
+PROJECTS
+
+Recruit-AI | AI-Powered Recruitment Platform for SMBs | December 2025
+- Led end-to-end product development from problem identification to MVP demonstration
+- Designed user flows, wireframes, and agent-based hiring workflows using Large Language Models
+- Defined north-star metrics including time-to-hire, screening accuracy, and recruiter productivity
+
+Agile Sprint Guardian | Multi-Agent AI for Sprint Planning | December 2025
+- Developed an Agentic AI system that automates backlog grooming by converting raw feature requests into structured User Stories
+- Designed the multi-agent architecture where a "Virtual PO" agent prioritizes tasks and a "Virtual Tech Lead" agent estimates complexity
+- Reduced sprint planning overhead by ~40% by pre-validating requirements before human review
+
+Smart Job Prep Assistant | AI Resume and Interview Preparation Tool | May 2025
+- Built an AI-driven product that analyzes job descriptions and generates optimized resume bullet points using the STAR framework
+- Reduced average resume drafting time by approximately 35% through automated suggestions and keyword insights
+- Implemented analytics to track user funnel behavior and feature adoption
+
+SKILLS
+Product Management: Product Strategy, Roadmapping, Feature Prioritization, User Research, Backlog Grooming, Sprint Planning
+Technical: Python, JavaScript, SQL, Django, React, Flutter, MERN Stack
+Tools: Jira, Notion, Figma, GitHub, Firebase, Docker
+AI/ML: LLM integration, RAG pipelines, LangChain, prompt engineering, multi-agent systems
+Analytics: User Funnel Analysis, Retention Metrics, Feature Adoption Tracking
+
+LEADERSHIP & ACHIEVEMENTS
+- Tech Head — Computer Society of India, PDEU
+- App Development Lead — ACM Student Chapter
+- Odoo Hackathon Finalist
+- GATE 2025 Qualified (CS/IT)
