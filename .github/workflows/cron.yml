@@ -1,0 +1,41 @@
+name: Daily Job Scraper Run
+
+on:
+  schedule:
+    # Run daily at 9:00 AM UTC (adjust to your timezone)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scrape-jobs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --all-extras
+
+      - name: Run job scraper pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
+        run: uv run job-scraper run
+
+      - name: Commit and push results (optional)
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add job_tracker.db job_dashboard.html ranked_jobs.md 2>/dev/null || true
+          git commit -m "chore: auto-update job data [skip ci]" || true
+          git push || true
