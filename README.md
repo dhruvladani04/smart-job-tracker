@@ -51,7 +51,7 @@ uv sync --all-extras
 
 # Configure API keys
 cp .env.example .env
-# Edit .env with your APIFY_API_TOKEN and GEMINI_API_KEY
+# Edit .env with your APIFY_API_KEY and GEMINI_API_KEY
 
 # Run full pipeline
 uv run job-scraper run
