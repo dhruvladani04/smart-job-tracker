@@ -1,0 +1,88 @@
+{
+  "name": "Dhruv Ladani",
+  "email": "",
+  "phone": "",
+  "location": "India",
+  "target_roles": [
+    "Associate Product Manager",
+    "Product Manager",
+    "AI Product Manager",
+    "Product Analyst",
+    "Technical Product Manager"
+  ],
+  "experience_level": "0-2 years",
+  "education": [
+    {
+      "degree": "B.Tech in Computer Science/Engineering",
+      "institution": "",
+      "graduation_year": 2026,
+      "gpa": ""
+    }
+  ],
+  "skills": {
+    "product": ["Product Management", "Product Strategy", "User Research", "Analytics", "A/B Testing", "Roadmapping"],
+    "technical": ["Java", "JavaScript", "Python", "React", "Django", "MongoDB", "SQL", "Node.js"],
+    "ai_ml": ["Prompt Engineering", "LLM Integration", "ML Model Deployment", "AI Product Development"],
+    "tools": ["Git", "Agile/Scrum", "Jira", "Figma", "Google Analytics"]
+  },
+  "projects": [
+    {
+      "title": "AI Interviewing Platform",
+      "description": "Built an AI-powered interview system with automated MCQ exams, video interviews, and recruiter ranking dashboard.",
+      "technologies": ["React", "Django", "MongoDB", "AI/LLM APIs"],
+      "impact": "Streamlined hiring process with automated candidate evaluation"
+    },
+    {
+      "title": "Order Tracking & Prediction System",
+      "description": "Developed end-to-end order tracking with ML-based delivery time prediction.",
+      "technologies": ["Python", "Django", "SQL", "Scikit-learn"],
+      "impact": "Improved delivery ETA accuracy and customer transparency"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Product Development Projects",
+      "company": "Personal Projects",
+      "duration": "2024-Present",
+      "description": "Led end-to-end product development of AI-powered tools, from user research to deployment.",
+      "achievements": [
+        "Defined product requirements and user stories for AI interviewing platform",
+        "Conducted user interviews to validate product-market fit",
+        "Built and iterated on MVP based on user feedback",
+        "Collaborated across design and engineering functions"
+      ]
+    }
+  ],
+  "strengths": [
+    "Technical depth - can collaborate effectively with engineering teams",
+    "AI/ML product experience - hands-on with LLM integration",
+    "Full-stack development - understands user flows end-to-end",
+    "Product thinking - focuses on user problems, not just features",
+    "Fast learner - self-taught multiple frameworks and AI tools"
+  ],
+  "differentiators": [
+    "Builder mindset - actually ships products",
+    "AI-native perspective - grew up with LLMs",
+    "Technical credibility with engineers",
+    "Data-driven decision making"
+  ],
+  "preferred_company_types": [
+    "Early-stage startups (10-100 employees)",
+    "AI-first companies",
+    "B2B SaaS",
+    "Product-led growth companies",
+    "Companies with technical founders"
+  ],
+  "work_preferences": {
+    "locations": ["Remote", "Bangalore", "Mumbai", "Pune", "Ahmedabad"],
+    "work_mode": ["Remote", "Hybrid", "Onsite"],
+    "salary_expectation": "market competitive"
+  },
+  "avoid": [
+    "Roles requiring 5+ years experience",
+    "Pure project management with no product ownership",
+    "Enterprise sales-heavy roles",
+    "Unpaid internships",
+    "Service-based IT companies"
+  ]
+}

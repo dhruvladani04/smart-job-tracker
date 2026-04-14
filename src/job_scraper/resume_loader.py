@@ -9,6 +9,7 @@ from pathlib import Path
 from pypdf import PdfReader
 
 DEFAULT_RESUME_PATHS = [
+    "resume.json",
     "Dhruv_Ladani_Resume_PM.pdf",
     "Dhruv_Ladani_Resume_Tech.pdf",
 ]
