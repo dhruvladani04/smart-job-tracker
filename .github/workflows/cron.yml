@@ -30,6 +30,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           APIFY_API_KEY: ${{ secrets.APIFY_API_KEY }}
+          APIFY_DEFAULT_COUNTRY: ${{ vars.APIFY_DEFAULT_COUNTRY || 'India' }}
         run: uv run job-scraper run
 
       - name: Sync data to Cloudflare D1

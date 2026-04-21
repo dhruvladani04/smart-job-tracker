@@ -112,6 +112,7 @@ To create `CF_API_TOKEN`:
 
 ### Variables (Repository Variables)
 - `CF_ACCOUNT_ID` — Found in Cloudflare dashboard URL or via `wrangler whoami`
+- `APIFY_DEFAULT_COUNTRY` (Optional) — Defaults to "India". Set this to another country (e.g., "United States") if you want the scraper to default to a different location.
 
 ## Step 6: Test the Full Flow Locally
 
