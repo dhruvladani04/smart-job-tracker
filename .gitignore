@@ -48,4 +48,8 @@ htmlcov/
 
 # OS
 .DS_Store
+
+# Cloudflare Wrangler
+.wrangler/
+src/job_scraper/.wrangler/
 Thumbs.db

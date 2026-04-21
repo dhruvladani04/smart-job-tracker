@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>window.API_BASE = 'https://job-tracker-api-production.dhruvladanicode04.workers.dev/api';</script>
   <title>Job Search Tracker</title>
   <style>
     :root {
@@ -701,7 +702,8 @@
   </div>
 
   <script>
-    const API_BASE = '/api';
+    // API_BASE is configured at deploy time via window.API_BASE or falls back to /api for local dev
+    const API_BASE = window.API_BASE || '/api';
     let selectedJobs = new Set();
     let currentJobId = null;
     let searchTimeout = null;

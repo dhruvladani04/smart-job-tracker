@@ -1,0 +1,28 @@
+# Cloudflare Workers + D1 Configuration
+name = "job-tracker-api"
+main = "src/cloudflare_worker.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "JOB_TRACKER_DB"
+database_name = "job-tracker-db"
+database_id = "3b3da83c-7c47-46b8-aba6-6e0eb9afab8c"
+
+# Environment variables (set via `wrangler secret put`)
+# GEMINI_API_KEY - for potential server-side AI scoring
+# APIFY_API_KEY - for potential server-side scraping
+
+[dev]
+# Local development uses SQLite file
+# Use `wrangler dev` to test locally
+# Note: D1 local development requires `wrangler dev --local` with a local SQLite
+
+[env.production]
+# Production environment settings
+# Override database_id after promoting dev to production
+
+[[env.production.d1_databases]]
+binding = "JOB_TRACKER_DB"
+database_name = "job-tracker-db"
+database_id = "3b3da83c-7c47-46b8-aba6-6e0eb9afab8c"

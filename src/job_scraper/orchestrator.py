@@ -46,14 +46,6 @@ DEFAULT_SEARCHES = [
         "limit": 50,
     },
     {
-        "query_name": "Product Analyst Bangalore",
-        "keywords": "Product Analyst",
-        "location": "Bangalore",
-        "actor": "all_jobs",
-        "date_posted": "7 days",
-        "limit": 50,
-    },
-    {
         "query_name": "Technical PM Remote",
         "keywords": "Technical Product Manager",
         "location": "Remote",
@@ -1059,6 +1051,58 @@ Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}
         print(f"[OK] Dashboard saved to: {output_path}")
         return output_path
 
+    def export_to_json(self, output_path: str = "job_tracker.json") -> str:
+        """Export all tracked jobs to JSON for Cloudflare D1 sync."""
+        jobs = self._tracked_jobs()
+
+        export_data = {
+            "exported_at": datetime.utcnow().isoformat(),
+            "version": "1.0",
+            "jobs": [],
+        }
+
+        for job in jobs:
+            export_data["jobs"].append({
+                "id": job.id,
+                "title": job.title,
+                "company": job.company,
+                "location": job.location,
+                "remote": job.remote,
+                "posted_date": job.posted_date,
+                "salary": job.salary,
+                "url": job.url,
+                "jd_raw": job.jd_raw,
+                "jd_summary": job.jd_summary,
+                "fit_score": job.fit_score,
+                "interview_chance": job.interview_chance,
+                "apply_priority": job.apply_priority,
+                "ai_model": job.ai_model,
+                "why_match": job.why_match,
+                "biggest_gap": job.biggest_gap,
+                "resume_tweaks": job.resume_tweaks,
+                "why_company_angle": job.why_company_angle,
+                "should_apply": job.should_apply,
+                "status": job.status,
+                "notes": job.notes,
+                "human_verdict": job.human_verdict,
+                "human_score": job.human_score,
+                "human_feedback": job.human_feedback,
+                "feedback_updated_at": job.feedback_updated_at.isoformat() if job.feedback_updated_at else None,
+                "applied_at": job.applied_at.isoformat() if job.applied_at else None,
+                "seen_count": job.seen_count,
+                "source": job.source,
+                "apify_run_id": job.apify_run_id,
+                "first_seen_at": job.first_seen_at.isoformat() if job.first_seen_at else None,
+                "last_seen_at": job.last_seen_at.isoformat() if job.last_seen_at else None,
+                "scraped_at": job.scraped_at.isoformat() if job.scraped_at else None,
+                "updated_at": job.updated_at.isoformat() if job.updated_at else None,
+            })
+
+        output_file = Path(output_path)
+        output_file.write_text(json.dumps(export_data, indent=2, default=str), encoding="utf-8")
+        print(f"[OK] JSON export saved to: {output_path} ({len(export_data['jobs'])} jobs)")
+        return output_path
+
     async def run_full_pipeline(
         self,
         searches: list[dict] | None = None,
@@ -1097,6 +1141,7 @@ Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}
                 )
             self.generate_tracker_markdown(tracker_path)
             self.generate_dashboard_html(dashboard_path)
+            self.export_to_json("job_tracker.json")
             return {
                 "success": True,
                 "total_jobs": search_results["total_jobs"],
@@ -1108,6 +1153,7 @@ Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}
                 "report_path": report_path if generate_report else None,
                 "tracker_path": tracker_path,
                 "dashboard_path": dashboard_path,
+                "json_export_path": "job_tracker.json",
             }
 
         # Step 2: Score
@@ -1135,6 +1181,10 @@ Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}
         self.generate_tracker_markdown(tracker_path)
         self.generate_dashboard_html(dashboard_path)
 
+        print("\n[STEP 6] Exporting to JSON for Cloudflare")
+        print("=" * 50)
+        self.export_to_json("job_tracker.json")
+
         print("\n" + "=" * 50)
         print("[OK] Pipeline complete!")
         print("=" * 50)
@@ -1150,6 +1200,7 @@ Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}
             "report_path": report_path if generate_report else None,
             "tracker_path": tracker_path,
             "dashboard_path": dashboard_path,
+            "json_export_path": "job_tracker.json",
         }
 
 
