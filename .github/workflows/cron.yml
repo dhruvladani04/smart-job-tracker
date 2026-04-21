@@ -32,6 +32,22 @@ jobs:
           APIFY_API_KEY: ${{ secrets.APIFY_API_KEY }}
         run: uv run job-scraper run
 
+      - name: Sync data to Cloudflare D1
+        if: ${{ secrets.CF_API_TOKEN != '' && secrets.CF_API_BASE != '' }}
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_API_BASE: ${{ secrets.CF_API_BASE }}
+        run: |
+          if [ -f "job_tracker.json" ]; then
+            echo "Syncing job_tracker.json to Cloudflare API..."
+            curl -X POST "${CF_API_BASE}/sync" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -d @job_tracker.json
+          else
+            echo "job_tracker.json not found, skipping sync."
+          fi
+
       - name: Commit and push results
         run: |
           git config --local user.email "action@github.com"
