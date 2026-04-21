@@ -99,9 +99,12 @@ wrangler pages deploy src/job_scraper/web --project-name=job-tracker-dashboard
 Go to your GitHub repository → Settings → Secrets and variables → Actions:
 
 ### Secrets (Repository Secrets)
-- `GEMINI_API_KEY` — your Gemini API key
-- `APIFY_API_KEY` — your Apify API key
-- `CF_API_TOKEN` — Cloudflare API token (for future sync automation)
+You must set these secrets in your GitHub repository for the scraper to run correctly and sync with Cloudflare.
+
+- `GEMINI_API_KEY` — your Gemini API key (Get from: https://aistudio.google.com/app/apikey).
+- `APIFY_API_KEY` — your Apify API key. If you run out of free tier tokens, simply create a new free account on Apify, grab the new API Key, and update this repository secret.
+- `CF_API_TOKEN` — Cloudflare API token (for automated syncing in GitHub Actions).
+- `CF_API_BASE` — The base URL to your Cloudflare Worker (e.g. `https://job-tracker-api.YOUR_SUBDOMAIN.workers.dev/api`). Without this, the automatic sync will be skipped!
 
 To create `CF_API_TOKEN`:
 1. Go to [dash.cloudflare.com → API Tokens](https://dash.cloudflare.com/profile/api-tokens)
